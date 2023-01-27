@@ -1,4 +1,5 @@
-# HoperSwap
+# Hopers-Swap
+
 This contract is for pools that includes hopers.
 For hopers token pools, we implemented burn fee for each swap.
 
