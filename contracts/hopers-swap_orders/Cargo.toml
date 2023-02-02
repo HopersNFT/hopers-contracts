@@ -1,5 +1,5 @@
 [package]
-name = "hopers_swap"
+name = "hopers_swap_orders"
 version = "1.1.2-beta"
 authors = ["VenusDev0725 <venus07250000@gmail.com>"]
 edition = "2018"
