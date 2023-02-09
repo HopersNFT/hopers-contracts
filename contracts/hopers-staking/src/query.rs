@@ -41,7 +41,7 @@ pub fn query_config(deps: Deps) -> StdResult<ConfigResponse> {
     let config = CONFIG.load(deps.storage)?;
     Ok(ConfigResponse {
         lp_token_contract: config.lp_token_contract,
-        reward_token_contract: config.reward_token_contract,
+        reward_token: config.reward_token,
         distribution_schedule: config.distribution_schedule,
         admin: config.admin,
         lock_duration: config.lock_duration,

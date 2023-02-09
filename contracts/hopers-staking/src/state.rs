@@ -1,4 +1,4 @@
-use cosmwasm_std::{Decimal, Uint128};
+use cosmwasm_std::{Addr, Decimal, Uint128};
 use cw_storage_plus::{Index, IndexList, IndexedMap, Item, MultiIndex};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -7,9 +7,16 @@ pub const CONFIG: Item<Config> = Item::new("config_config");
 pub const STATE: Item<State> = Item::new("config_state");
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum Denom {
+    Native(String),
+    Cw20(Addr),
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Config {
     pub lp_token_contract: String,
-    pub reward_token_contract: String,
+    pub reward_token: Denom,
     pub distribution_schedule: Vec<(u64, u64, Uint128)>,
     pub admin: String,
     pub lock_duration: u64,

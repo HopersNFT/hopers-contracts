@@ -1,6 +1,6 @@
 use cosmwasm_std::{
-    entry_point, from_binary, to_binary, CosmosMsg, Decimal, Deps, DepsMut, Env, MessageInfo,
-    Response, StdResult, Uint128, WasmMsg,
+    entry_point, from_binary, to_binary, BankMsg, Coin, CosmosMsg, Decimal, Deps, DepsMut, Env,
+    MessageInfo, Response, StdResult, Uint128, WasmMsg,
 };
 
 use crate::error::ContractError;
@@ -8,8 +8,8 @@ use crate::msg::{Cw20HookMsg, ExecuteMsg, InstantiateMsg, MigrateMsg};
 use crate::query::query_all_unbonding_info;
 use crate::state::{
     staker_info_key, staker_info_storage, unbonding_info_key, unbonding_info_storage,
-    user_earned_info_key, user_earned_info_storage, Config, StakerInfo, State, UnbondingInfo,
-    UserEarnedInfo, CONFIG, STATE,
+    user_earned_info_key, user_earned_info_storage, Config, Denom, StakerInfo, State,
+    UnbondingInfo, UserEarnedInfo, CONFIG, STATE,
 };
 
 use cw2::{get_contract_version, set_contract_version};
@@ -30,13 +30,12 @@ pub fn instantiate(
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
 
     deps.api.addr_validate(&msg.lp_token_contract)?;
-    deps.api.addr_validate(&msg.reward_token_contract)?;
 
     CONFIG.save(
         deps.storage,
         &Config {
             lp_token_contract: msg.lp_token_contract,
-            reward_token_contract: msg.reward_token_contract,
+            reward_token: msg.reward_token,
             distribution_schedule: msg.distribution_schedule,
             admin: info.sender.to_string(),
             lock_duration: msg.lock_duration,
@@ -76,8 +75,8 @@ pub fn execute(
         ExecuteMsg::UpdateAdmin { admin } => update_admin(deps, info, admin),
         ExecuteMsg::UpdateTokenContract {
             lp_token_contract,
-            reward_token_contract,
-        } => update_token_contract(deps, info, lp_token_contract, reward_token_contract),
+            reward_token,
+        } => update_token_contract(deps, info, lp_token_contract, reward_token),
         ExecuteMsg::UpdateLockDuration { lock_duration } => {
             update_lock_duration(deps, info, lock_duration)
         }
@@ -299,20 +298,32 @@ pub fn withdraw(deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, 
     // Store updated state
     STATE.save(deps.storage, &state)?;
 
-    Ok(Response::new()
-        .add_messages(vec![CosmosMsg::Wasm(WasmMsg::Execute {
-            contract_addr: config.reward_token_contract,
-            msg: to_binary(&Cw20ExecuteMsg::Transfer {
-                recipient: info.sender.to_string(),
-                amount,
-            })?,
-            funds: vec![],
-        })])
-        .add_attributes(vec![
-            ("action", "withdraw"),
-            ("owner", info.sender.as_str()),
-            ("amount", amount.to_string().as_str()),
-        ]))
+    let reward_msg: CosmosMsg;
+
+    match config.reward_token {
+        Denom::Native(denom) => {
+            reward_msg = CosmosMsg::Bank(BankMsg::Send {
+                to_address: info.sender.to_string(),
+                amount: vec![Coin { denom, amount }],
+            })
+        }
+        Denom::Cw20(address) => {
+            reward_msg = CosmosMsg::Wasm(WasmMsg::Execute {
+                contract_addr: address.to_string(),
+                msg: to_binary(&Cw20ExecuteMsg::Transfer {
+                    recipient: info.sender.to_string(),
+                    amount,
+                })?,
+                funds: vec![],
+            });
+        }
+    }
+
+    Ok(Response::new().add_message(reward_msg).add_attributes(vec![
+        ("action", "withdraw"),
+        ("owner", info.sender.as_str()),
+        ("amount", amount.to_string().as_str()),
+    ]))
 }
 
 pub fn migrate_staking(
@@ -404,7 +415,7 @@ pub fn update_config(
     let new_config = Config {
         admin: config.admin,
         lp_token_contract: config.lp_token_contract,
-        reward_token_contract: config.reward_token_contract,
+        reward_token: config.reward_token,
         distribution_schedule,
         lock_duration: config.lock_duration,
     };
@@ -433,15 +444,14 @@ pub fn update_token_contract(
     deps: DepsMut,
     info: MessageInfo,
     lp_contract: String,
-    reward_contract: String,
+    reward_token: Denom,
 ) -> Result<Response, ContractError> {
     let mut config = CONFIG.load(deps.storage)?;
 
     deps.api.addr_validate(&lp_contract)?;
-    deps.api.addr_validate(&reward_contract)?;
 
     authcheck(deps.as_ref(), &info)?;
-    config.reward_token_contract = reward_contract;
+    config.reward_token = reward_token;
     config.lp_token_contract = lp_contract;
 
     CONFIG.save(deps.storage, &config)?;

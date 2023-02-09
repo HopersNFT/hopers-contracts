@@ -4,12 +4,12 @@ use serde::{Deserialize, Serialize};
 use cosmwasm_std::{Decimal, Uint128};
 use cw20::Cw20ReceiveMsg;
 
-use crate::state::{StakerInfo, UnbondingInfo};
+use crate::state::{Denom, StakerInfo, UnbondingInfo};
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct InstantiateMsg {
     pub lp_token_contract: String,
-    pub reward_token_contract: String,
+    pub reward_token: Denom,
     pub distribution_schedule: Vec<(u64, u64, Uint128)>,
     pub lock_duration: u64,
 }
@@ -37,7 +37,7 @@ pub enum ExecuteMsg {
     },
     UpdateTokenContract {
         lp_token_contract: String,
-        reward_token_contract: String,
+        reward_token: Denom,
     },
     UpdateLockDuration {
         lock_duration: u64,
@@ -80,7 +80,7 @@ pub enum QueryMsg {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct ConfigResponse {
     pub lp_token_contract: String,
-    pub reward_token_contract: String,
+    pub reward_token: Denom,
     pub distribution_schedule: Vec<(u64, u64, Uint128)>,
     pub admin: String,
     pub lock_duration: u64,

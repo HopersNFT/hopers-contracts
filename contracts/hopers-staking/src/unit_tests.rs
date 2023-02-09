@@ -2,15 +2,16 @@
 use crate::contract::{execute, instantiate};
 use crate::msg::{Cw20HookMsg, ExecuteMsg, InstantiateMsg};
 use crate::query::{query_all_unbonding_info, query_staker_info, query_unbonding_info};
+use crate::state::Denom;
 use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
-use cosmwasm_std::{to_binary, CosmosMsg, DepsMut, Env, Uint128, WasmMsg};
+use cosmwasm_std::{to_binary, Addr, BankMsg, Coin, CosmosMsg, DepsMut, Env, Uint128, WasmMsg};
 
 use cw20::{Cw20ExecuteMsg, Cw20ReceiveMsg};
 
 fn setup_contract(deps: DepsMut, env: Env) {
     let instantiate_msg = InstantiateMsg {
         lp_token_contract: "lp_token_contract".to_string(),
-        reward_token_contract: "reward_token_contract".to_string(),
+        reward_token: Denom::Native("ujuno".to_string()),
         distribution_schedule: vec![(
             env.block.time.seconds(),
             env.block.time.seconds() + 86400,
@@ -173,16 +174,27 @@ fn test_withdraw() {
     let msg = ExecuteMsg::Withdraw {};
     let res = execute(deps.as_mut(), env.clone(), info, msg).unwrap();
     assert_eq!(res.messages.len(), 1);
+    // assert_eq!(
+    //     res.messages[0].msg,
+    //     CosmosMsg::Wasm(WasmMsg::Execute {
+    //         contract_addr: "reward_token_contract".to_string(),
+    //         msg: to_binary(&Cw20ExecuteMsg::Transfer {
+    //             recipient: "user1".to_string(),
+    //             amount: staker1_info.pending_reward
+    //         })
+    //         .unwrap(),
+    //         funds: vec![]
+    //     })
+    // )
+
     assert_eq!(
         res.messages[0].msg,
-        CosmosMsg::Wasm(WasmMsg::Execute {
-            contract_addr: "reward_token_contract".to_string(),
-            msg: to_binary(&Cw20ExecuteMsg::Transfer {
-                recipient: "user1".to_string(),
+        CosmosMsg::Bank(BankMsg::Send {
+            to_address: "user1".to_string(),
+            amount: vec![Coin {
+                denom: "ujuno".to_string(),
                 amount: staker1_info.pending_reward
-            })
-            .unwrap(),
-            funds: vec![]
+            }]
         })
     )
 }
