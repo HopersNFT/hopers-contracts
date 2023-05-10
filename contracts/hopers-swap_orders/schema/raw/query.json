@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "QueryMsg",
-  "anyOf": [
+  "oneOf": [
     {
       "description": "Implements CW20. Returns the current balance of the given address, 0 if unset.",
       "type": "object",
@@ -18,7 +18,8 @@
             "address": {
               "type": "string"
             }
-          }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -30,7 +31,8 @@
       ],
       "properties": {
         "info": {
-          "type": "object"
+          "type": "object",
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -50,7 +52,8 @@
             "token1_amount": {
               "$ref": "#/definitions/Uint128"
             }
-          }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -70,7 +73,21 @@
             "token2_amount": {
               "$ref": "#/definitions/Uint128"
             }
-          }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "fee"
+      ],
+      "properties": {
+        "fee": {
+          "type": "object",
+          "additionalProperties": false
         }
       },
       "additionalProperties": false

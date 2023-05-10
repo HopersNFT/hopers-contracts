@@ -1,6 +1,6 @@
 use cosmwasm_std::{
     attr, entry_point, to_binary, Addr, Binary, BlockInfo, Coin, CosmosMsg, Decimal, Deps, DepsMut,
-    Env, MessageInfo, Reply, Response, StdError, StdResult, SubMsg, Uint128, Uint256, Uint512,
+    Env, MessageInfo, Reply, Response, StdError, StdResult, SubMsg, Uint128,
     WasmMsg,
 };
 use cw0::parse_reply_instantiate_data;
@@ -8,7 +8,6 @@ use cw2::{get_contract_version, set_contract_version};
 use cw20::Denom::Cw20;
 use cw20::{Cw20ExecuteMsg, Denom, Expiration, MinterResponse};
 use cw20_base::contract::query_balance;
-use std::convert::TryInto;
 use std::str::FromStr;
 
 use crate::error::ContractError;
@@ -24,9 +23,9 @@ pub const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 const INSTANTIATE_LP_TOKEN_REPLY_ID: u64 = 0;
 
-const FEE_SCALE_FACTOR: Uint128 = Uint128::new(10_000);
+//const FEE_SCALE_FACTOR: Uint128 = Uint128::new(10_000);
 const MAX_FEE_PERCENT: &str = "1";
-const FEE_DECIMAL_PRECISION: Uint128 = Uint128::new(10u128.pow(20));
+//const FEE_DECIMAL_PRECISION: Uint128 = Uint128::new(10u128.pow(20));
 
 // Note, you can use StdResult in some functions where you do not
 // make use of the custom errors
@@ -688,6 +687,7 @@ fn get_fee_transfer_msg(
     }
 }
 
+/* 
 fn fee_decimal_to_uint128(decimal: Decimal) -> StdResult<Uint128> {
     let result: Uint128 = decimal
         .atomics()
@@ -695,7 +695,7 @@ fn fee_decimal_to_uint128(decimal: Decimal) -> StdResult<Uint128> {
         .map_err(StdError::overflow)?;
 
     Ok(result / FEE_DECIMAL_PRECISION)
-}
+} */
 
 pub fn get_input_price(
     input_amount: Uint128,

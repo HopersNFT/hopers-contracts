@@ -17,7 +17,7 @@ use cw20::{Cw20ExecuteMsg, Cw20ReceiveMsg};
 
 use std::collections::BTreeMap;
 
-const CONTRACT_NAME: &str = "Hopers_Staking";
+const CONTRACT_NAME: &str = "hopers_staking";
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 #[entry_point]

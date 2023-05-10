@@ -3,22 +3,6 @@
 version = 3
 
 [[package]]
-name = "Hopers_Staking"
-version = "0.1.0"
-dependencies = [
- "cosmwasm-schema",
- "cosmwasm-std",
- "cosmwasm-storage",
- "cosmwasm-vm",
- "cw-storage-plus 0.12.1",
- "cw2 0.12.1",
- "cw20 0.12.1",
- "schemars",
- "serde",
- "thiserror",
-]
-
-[[package]]
 name = "addr2line"
 version = "0.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -213,9 +197,9 @@ dependencies = [
 
 [[package]]
 name = "cosmwasm-schema"
-version = "1.2.0"
+version = "1.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a3dfcfa0c6f4b9aef8820c0a999410f239828a4503a388ce8e55f59fe3ac863"
+checksum = "0f00b363610218eea83f24bbab09e1a7c3920b79f068334fdfcc62f6129ef9fc"
 dependencies = [
  "cosmwasm-schema-derive",
  "schemars",
@@ -226,9 +210,9 @@ dependencies = [
 
 [[package]]
 name = "cosmwasm-schema-derive"
-version = "1.2.0"
+version = "1.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e19cd48063eef5b92a0aabcf0687705802178ae175571dfdc5f3b925d0741d39"
+checksum = "ae38f909b2822d32b275c9e2db9728497aa33ffe67dd463bc67c6a3b7092785c"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -452,36 +436,17 @@ dependencies = [
 
 [[package]]
 name = "cw-multi-test"
-version = "0.10.3"
+version = "0.16.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f89a6191b839adef794f9bb8610d6d99857188517cca378b694e670bd1be614f"
+checksum = "2a18afd2e201221c6d72a57f0886ef2a22151bbc9e6db7af276fde8a91081042"
 dependencies = [
  "anyhow",
  "cosmwasm-std",
- "cosmwasm-storage",
- "cw-storage-plus 0.10.3",
- "cw0",
+ "cw-storage-plus 1.0.1",
+ "cw-utils 1.0.1",
  "derivative",
  "itertools",
- "prost",
- "schemars",
- "serde",
- "thiserror",
-]
-
-[[package]]
-name = "cw-multi-test"
-version = "0.14.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca153120cf5b91af88be106b0c6c0263423d959bc813b1592982c02c4691a4ae"
-dependencies = [
- "anyhow",
- "cosmwasm-std",
- "cosmwasm-storage",
- "cw-storage-plus 0.14.0",
- "cw-utils 0.14.0",
- "derivative",
- "itertools",
+ "k256",
  "prost",
  "schemars",
  "serde",
@@ -533,6 +498,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "cw-storage-plus"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "053a5083c258acd68386734f428a5a171b29f7d733151ae83090c6fcc9417ffa"
+dependencies = [
+ "cosmwasm-std",
+ "schemars",
+ "serde",
+]
+
+[[package]]
 name = "cw-utils"
 version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -552,6 +528,21 @@ checksum = "414b91f3d7a619bb26c835119d7095804596a1382ddc1d184c33c1d2c17f6c5e"
 dependencies = [
  "cosmwasm-std",
  "cw2 0.14.0",
+ "schemars",
+ "semver",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "cw-utils"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c80e93d1deccb8588db03945016a292c3c631e6325d349ebb35d2db6f4f946f7"
+dependencies = [
+ "cosmwasm-schema",
+ "cosmwasm-std",
+ "cw2 1.0.1",
  "schemars",
  "semver",
  "serde",
@@ -619,6 +610,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "cw2"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8fb70cee2cf0b4a8ff7253e6bc6647107905e8eb37208f87d54f67810faa62f8"
+dependencies = [
+ "cosmwasm-schema",
+ "cosmwasm-std",
+ "cw-storage-plus 1.0.1",
+ "schemars",
+ "serde",
+]
+
+[[package]]
 name = "cw20"
 version = "0.10.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -676,7 +680,7 @@ version = "0.14.0"
 dependencies = [
  "cosmwasm-schema",
  "cosmwasm-std",
- "cw-multi-test 0.14.0",
+ "cw-multi-test",
  "cw-storage-plus 0.14.0",
  "cw-utils 0.14.0",
  "cw2 0.14.0",
@@ -1017,13 +1021,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "hopers_staking"
+version = "0.1.0"
+dependencies = [
+ "cosmwasm-schema",
+ "cosmwasm-std",
+ "cosmwasm-storage",
+ "cosmwasm-vm",
+ "cw-storage-plus 0.12.1",
+ "cw2 0.12.1",
+ "cw20 0.12.1",
+ "schemars",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
 name = "hopers_swap_hopers"
 version = "1.1.2-beta"
 dependencies = [
  "cosmwasm-schema",
  "cosmwasm-std",
  "cosmwasm-storage",
- "cw-multi-test 0.10.3",
+ "cw-multi-test",
  "cw-storage-plus 0.10.3",
  "cw0",
  "cw2 0.11.1",
@@ -1041,7 +1061,7 @@ dependencies = [
  "cosmwasm-schema",
  "cosmwasm-std",
  "cosmwasm-storage",
- "cw-multi-test 0.10.3",
+ "cw-multi-test",
  "cw-storage-plus 0.10.3",
  "cw0",
  "cw2 0.11.1",

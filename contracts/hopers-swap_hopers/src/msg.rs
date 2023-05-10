@@ -1,11 +1,11 @@
-use schemars::JsonSchema;
-use serde::{Deserialize, Serialize};
+use cosmwasm_schema::cw_serde;
+use cosmwasm_schema::QueryResponses;
 
 use cosmwasm_std::{Decimal, Uint128};
 
 use cw20::{Denom, Expiration};
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[cw_serde]
 pub struct InstantiateMsg {
     pub token1_denom: Denom,
     pub token2_denom: Denom,
@@ -20,14 +20,13 @@ pub struct InstantiateMsg {
     pub dev_wallet_lists: Vec<WalletInfo>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[cw_serde]
 pub enum TokenSelect {
     Token1,
     Token2,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-#[serde(rename_all = "snake_case")]
+#[cw_serde]
 pub enum ExecuteMsg {
     AddLiquidity {
         token1_amount: Uint128,
@@ -71,28 +70,39 @@ pub enum ExecuteMsg {
     },
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
-#[serde(rename_all = "snake_case")]
+#[cw_serde]
+#[derive(QueryResponses)]
 pub enum QueryMsg {
     /// Implements CW20. Returns the current balance of the given address, 0 if unset.
+    #[returns(BalanceResponse)]
     Balance {
         address: String,
     },
+    #[returns(InfoResponse)]
     Info {},
+    #[returns(Token1ForToken2PriceResponse)]
     Token1ForToken2Price {
         token1_amount: Uint128,
     },
+    #[returns(Token2ForToken1PriceResponse)]
     Token2ForToken1Price {
         token2_amount: Uint128,
     },
+    #[returns(FeeResponse)]
     Fee {},
 }
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[cw_serde]
 pub struct MigrateMsg {
     pub burn_fee_percent_numerator: Uint128,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+
+#[cw_serde]
+pub struct BalanceResponse {
+    pub balance: Uint128,
+}
+
+#[cw_serde]
 pub struct InfoResponse {
     pub token1_reserve: Uint128,
     pub token1_denom: Denom,
@@ -102,24 +112,25 @@ pub struct InfoResponse {
     pub lp_token_address: String,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[cw_serde]
 pub struct FeeResponse {
     pub owner: Option<String>,
     pub total_fee_percent: Decimal,
     pub dev_wallet_lists: Vec<WalletInfo>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[cw_serde]
 pub struct Token1ForToken2PriceResponse {
     pub token2_amount: Uint128,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[cw_serde]
 pub struct Token2ForToken1PriceResponse {
     pub token1_amount: Uint128,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[cw_serde]
+#[derive(Eq)]
 pub struct WalletInfo {
     pub address: String,
     pub ratio: Decimal,

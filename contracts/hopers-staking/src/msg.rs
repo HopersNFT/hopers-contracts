@@ -1,12 +1,12 @@
-use schemars::JsonSchema;
-use serde::{Deserialize, Serialize};
+use cosmwasm_schema::cw_serde;
+use cosmwasm_schema::QueryResponses;
 
 use cosmwasm_std::{Decimal, Uint128};
 use cw20::Cw20ReceiveMsg;
 
 use crate::state::{Denom, StakerInfo, UnbondingInfo};
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[cw_serde]
 pub struct InstantiateMsg {
     pub lp_token_contract: String,
     pub reward_token: Denom,
@@ -14,8 +14,7 @@ pub struct InstantiateMsg {
     pub lock_duration: u64,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-#[serde(rename_all = "snake_case")]
+#[cw_serde]
 pub enum ExecuteMsg {
     Receive(Cw20ReceiveMsg),
     Unbond {
@@ -44,31 +43,35 @@ pub enum ExecuteMsg {
     },
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-#[serde(rename_all = "snake_case")]
+#[cw_serde]
 pub enum Cw20HookMsg {
     Bond {},
 }
 
 /// migrate struct for distribution schedule
 /// block-based schedule to a time-based schedule
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[cw_serde]
 pub struct MigrateMsg {}
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-#[serde(rename_all = "snake_case")]
+#[cw_serde]
+#[derive(QueryResponses)]
 pub enum QueryMsg {
+    #[returns(ConfigResponse)]
     Config {},
+    #[returns(StateResponse)]
     State {
         block_time: Option<u64>,
     },
+    #[returns(StakerInfoResponse)]
     StakerInfo {
         staker: String,
     },
+    #[returns(StakersListResponse)]
     AllStakers {
         start_after: Option<String>,
         limit: Option<u32>,
     },
+    #[returns(UnbondingInfoResponse)]
     UnbondingInfo {
         staker: String,
         start_after: Option<u64>,
@@ -77,7 +80,7 @@ pub enum QueryMsg {
 }
 
 // We define a custom struct for each query response
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[cw_serde]
 pub struct ConfigResponse {
     pub lp_token_contract: String,
     pub reward_token: Denom,
@@ -87,7 +90,7 @@ pub struct ConfigResponse {
 }
 
 // We define a custom struct for each query response
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[cw_serde]
 pub struct StateResponse {
     pub last_distributed: u64,
     pub total_bond_amount: Uint128,
@@ -95,7 +98,7 @@ pub struct StateResponse {
 }
 
 // We define a custom struct for each query response
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[cw_serde]
 pub struct StakerInfoResponse {
     pub staker: String,
     pub reward_index: Decimal,
@@ -104,12 +107,12 @@ pub struct StakerInfoResponse {
     pub total_earned: Uint128,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[cw_serde]
 pub struct StakersListResponse {
     pub stakers_list: Vec<StakerInfo>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[cw_serde]
 pub struct UnbondingInfoResponse {
     pub unbonding_info: Vec<UnbondingInfo>,
     pub crr_time: u64,
