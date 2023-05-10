@@ -1,5 +1,5 @@
 [package]
-name = "Hopers_Staking"
+name = "hopers_staking"
 version = "0.1.0"
 authors = ["Jason <venus07250000@gmail.com>"]
 edition = "2018"
@@ -35,7 +35,7 @@ cw2 = "0.12.0"
 thiserror = "1.0.23"
 serde = { version = "1.0.103", default-features = false, features = ["derive"] }
 cw20 = "0.12.0"
+cosmwasm-schema = "1.2.5"
 
 [dev-dependencies]
-cosmwasm-schema = "1.0.0-beta"
 cosmwasm-vm = "1.0.0-beta"

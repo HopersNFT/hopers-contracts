@@ -4,7 +4,7 @@ use crate::msg::{Cw20HookMsg, ExecuteMsg, InstantiateMsg};
 use crate::query::{query_all_unbonding_info, query_staker_info, query_unbonding_info};
 use crate::state::Denom;
 use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
-use cosmwasm_std::{to_binary, Addr, BankMsg, Coin, CosmosMsg, DepsMut, Env, Uint128, WasmMsg};
+use cosmwasm_std::{to_binary, BankMsg, Coin, CosmosMsg, DepsMut, Env, Uint128, WasmMsg};
 
 use cw20::{Cw20ExecuteMsg, Cw20ReceiveMsg};
 
